@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "start": "wds --node-resolve -p 3000",
-    "clean": "rm -rf lib",
+    "clean": "find lib -type f -name '*.ts' -delete -o -name '*.js' -delete",
     "build": "npm run clean && tsc",
     "dev": "npm-run-all --parallel 'build -- --watch' 'start -- --watch'",
     "test": "npm run build && wtr --node-resolve 'lib/**/*.spec.js'"

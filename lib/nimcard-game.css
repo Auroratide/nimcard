@@ -1,0 +1,17 @@
+nimcard-game ol {
+    list-style: none;
+    display: flex;
+}
+
+nimcard-game ol[slot="board"] {
+    flex-direction: column;
+}
+
+nimcard-game ol[slot="board"] > li {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+nimcard-game ol[slot="board"] playing-card {
+    margin-right: 0.5em;
+}
