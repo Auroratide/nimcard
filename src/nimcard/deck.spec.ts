@@ -26,4 +26,28 @@ describe('deck', () => {
             })
         })
     })
+
+    describe('removeCard', () => {
+        const Q = Card.Value.Queen
+        const D = Card.Suit.Diamonds
+        const S = Card.Suit.Spades
+
+        it('card is in the deck', () => {
+            const original = Deck.createFullDeck()
+
+            const { deck: result, card } = Deck.removeCard(original, { value: Q, suit: D })
+
+            expect(result.find(c => c.value === Q && c.suit === D)).to.be.undefined
+            expect(card).to.deep.equal({ value: Q, suit: D })
+        })
+
+        it('card not in the deck', () => {
+            const original = [{ value: Q, suit: S }]
+
+            const { deck: result, card } = Deck.removeCard(original, { value: Q, suit: D })
+
+            expect(result).to.have.length(1)
+            expect(card).to.be.null
+        })
+    })
 })
