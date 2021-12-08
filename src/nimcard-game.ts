@@ -1,13 +1,42 @@
+import * as Nimcard from './nimcard'
+
 export class NimcardGame extends HTMLElement {
     static elementName = 'nimcard-game'
 
-    static html = `<p>Hello!</p>`
+    static html = `
+        <slot name="board"></slot>
+    `
 
-    static css = `p { color: red; }`
+    static css = `
+        :host {
+            display: block;
+        }
+    `
 
     constructor() {
         super()
         this.createRoot()
+    }
+
+    start = (game: Nimcard.Game) => {
+        this.innerHTML = ''
+        const boardElem = document.createElement('ol')
+        boardElem.slot = 'board'
+
+        game.board.forEach(row => {
+            const rowLi = document.createElement('li')
+            const rowElem = document.createElement('ol')
+            row.forEach(card => {
+                const li = document.createElement('li')
+                li.innerHTML = `<playing-card value="${card.card.value}" suit="${card.card.suit}"></playing-card>`
+                rowElem.appendChild(li)
+            })
+
+            rowLi.appendChild(rowElem)
+            boardElem.appendChild(rowLi)
+        })
+
+        this.appendChild(boardElem)
     }
 
     private createRoot(): ShadowRoot {
