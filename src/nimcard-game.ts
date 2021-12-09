@@ -1,5 +1,7 @@
 import * as Nimcard from './nimcard'
 
+export type Player = (component: NimcardGame) => void
+
 export class NimcardGame extends HTMLElement {
     static elementName = 'nimcard-game'
 
@@ -13,30 +15,61 @@ export class NimcardGame extends HTMLElement {
         }
     `
 
+    game: Nimcard.Game | null = null
+
     constructor() {
         super()
         this.createRoot()
     }
 
     start = (game: Nimcard.Game) => {
+        this.game = game
+        this.renderBoard()
+    }
+
+    private renderBoard = () => {
         this.innerHTML = ''
-        const boardElem = document.createElement('ol')
-        boardElem.slot = 'board'
+        const elem = document.createElement('ol')
+        elem.slot = 'board'
 
-        game.board.forEach(row => {
-            const rowLi = document.createElement('li')
-            const rowElem = document.createElement('ol')
-            row.forEach(card => {
-                const li = document.createElement('li')
-                li.innerHTML = `<playing-card value="${card.card.value}" suit="${card.card.suit}"></playing-card>`
-                rowElem.appendChild(li)
-            })
-
-            rowLi.appendChild(rowElem)
-            boardElem.appendChild(rowLi)
+        this.game!.board.forEach((row, ri) => {
+            const li = document.createElement('li')
+            li.appendChild(this.renderRow(row, ri))
+            elem.appendChild(li)
         })
 
-        this.appendChild(boardElem)
+        this.appendChild(elem)
+    }
+
+    private renderRow = (row: Nimcard.Board.ScoredCard[], rowIndex: number): HTMLElement => {
+        const elem = document.createElement('ol')
+
+        row.forEach((card, ci) => {
+            const li = document.createElement('li')
+            li.appendChild(this.renderCard(card.card, rowIndex, ci))
+            elem.appendChild(li)
+        })
+
+        return elem
+    }
+
+    private renderCard = (card: Nimcard.Card, rowIndex: number, cardIndex: number): HTMLElement => {
+        const button = document.createElement('button')
+        button.innerHTML = `<playing-card value="${card.value}" suit="${card.suit}"></playing-card>`
+
+        button.onclick = () => {
+            const options = Nimcard.Game.options(this.game!)
+            const targetRow = rowIndex
+            const targetAmount = this.game!.board[rowIndex].length - cardIndex
+            const option = options.find(o => o.row === targetRow && o.amount === targetAmount)
+
+            if (option) {
+                this.game = option.commit()
+                this.renderBoard()
+            }
+        }
+
+        return button
     }
 
     private createRoot(): ShadowRoot {
