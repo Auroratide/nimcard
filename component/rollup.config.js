@@ -2,7 +2,6 @@ import * as path from 'path'
 import svelte from 'rollup-plugin-svelte'
 import css from 'rollup-plugin-css-only'
 import resolve from '@rollup/plugin-node-resolve'
-import livereload from 'rollup-plugin-livereload'
 import { terser } from 'rollup-plugin-terser'
 import sveltePreprocess from 'svelte-preprocess'
 import typescript from '@rollup/plugin-typescript'
@@ -45,9 +44,6 @@ export default [ {
             sourceMap: !production,
             inlineSources: !production,
         }),
-
-        // Refresh browser when changes occur in public
-        // !production && livereload('public'),
 
         // Minify for production
         production && terser()
