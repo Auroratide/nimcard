@@ -12,7 +12,7 @@
     "clean": "rm -rf component/lib nimcard/lib",
     "build": "npm-run-all build:nimcard build:component",
     "dev": "npm-run-all --parallel 'build:nimcard -- --watch' 'build:component -- -w' 'start -- --watch'",
-    "test": "npm run build && wtr"
+    "test": "npm-run-all clean build && wtr"
   },
   "author": {
     "name": "Timothy Foster",
