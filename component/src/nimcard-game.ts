@@ -1,5 +1,5 @@
 import type * as Nimcard from '../../nimcard/lib'
-import NimcardSvelteComponent from './NimcardGame.svelte'
+import NimcardInternal from './NimcardInternal.svelte'
 
 export class NimcardGame extends HTMLElement {
     static elementName = 'nimcard-game'
@@ -14,13 +14,13 @@ export class NimcardGame extends HTMLElement {
         }
     `
 
-    private internal: NimcardSvelteComponent
+    private internal: NimcardInternal
 
     constructor() {
         super()
         this.createRoot()
 
-        this.internal = new NimcardSvelteComponent({
+        this.internal = new NimcardInternal({
             target: this,
         })
     }
