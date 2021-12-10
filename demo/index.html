@@ -5,17 +5,17 @@
         <title>Demo</title>
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" />
-        <link rel="stylesheet" href="../lib/nimcard-game.css" />
+        <link rel="stylesheet" href="../component/lib/style.css" />
         <link rel="stylesheet" href="demo/index.css" />
 
         <script type="module" src="../node_modules/@auroratide/playing-card/lib/define.js"></script>
-        <script type="module" src="../lib/define.js"></script>
+        <script type="module" src="../component/lib/define.js"></script>
     </head>
     <body>
         <main>
             <nimcard-game id="game"></nimcard-game>
             <script type="module">
-                import * as Nimcard from '../lib/nimcard/index.js'
+                import * as Nimcard from '../nimcard/lib/index.js'
                 const deck = Nimcard.Deck.createFullDeck()
                 const board = Nimcard.Board.create(deck)
                 const game = Nimcard.Game.start(board)

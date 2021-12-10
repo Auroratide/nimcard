@@ -1,0 +1,12 @@
+{
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "strict": true,
+        "noImplicitAny": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": [ "src/**/*", "test/nimcard-game.spec.js" ]
+}

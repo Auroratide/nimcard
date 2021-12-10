@@ -1,11 +1,13 @@
 import { expect, fixture } from '@open-wc/testing'
-import * as Nimcard from './nimcard'
-import { NimcardGame } from './nimcard-game'
+import * as Nimcard from '../../nimcard/lib/index.js'
 import '@auroratide/playing-card/lib/define'
-import './define'
+import '../lib/define.js'
 
 const Value = Nimcard.Card.Value
 const Suit = Nimcard.Card.Suit
+
+// give svelte time to update itself
+const tick = () => new Promise(resolve => setTimeout(resolve))
 
 describe('my-component', () => {
     const deck = [
@@ -15,12 +17,12 @@ describe('my-component', () => {
         { value: Value.King, suit: Suit.Hearts },
     ]
 
-    const onBoard = () => '[slot="board"] '
-    const playingCard = (value: Nimcard.Card.Value, suit: Nimcard.Card.Suit) =>
+    const onBoard = () => '.board '
+    const playingCard = (value, suit) =>
         `playing-card[value="${value}"][suit="${suit}"]`
 
     it('rendering the board', async () => {
-        const elem = await fixture<NimcardGame>(`
+        const elem = await fixture(`
             <nimcard-game></nimcard-game>
         `)
 
@@ -28,6 +30,7 @@ describe('my-component', () => {
         const game = Nimcard.Game.start(board)
 
         elem.start(game)
+        await tick()
 
         expect(elem.querySelectorAll('playing-card')).to.have.length(4)
         expect(elem.querySelector(playingCard(Value.Queen, Suit.Diamonds))).to.exist
@@ -37,7 +40,7 @@ describe('my-component', () => {
     })
 
     it('playing a move', async () => {
-        const elem = await fixture<NimcardGame>(`
+        const elem = await fixture(`
             <nimcard-game></nimcard-game>
         `)
 
@@ -45,11 +48,13 @@ describe('my-component', () => {
         const game = Nimcard.Game.start(board)
 
         elem.start(game)
+        await tick()
 
         // Board is:
         // 2s 3c
         // Qd Kh
-        elem.querySelector<HTMLElement>(onBoard() + playingCard(Value.Two, Suit.Spades))!.click()
+        elem.querySelector(onBoard() + playingCard(Value.Two, Suit.Spades)).click()
+        await tick()
 
         expect(elem.querySelectorAll(onBoard() + 'playing-card')).to.have.length(2)
     })

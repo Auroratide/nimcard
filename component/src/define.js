@@ -1,3 +1,3 @@
-import { NimcardGame } from './nimcard-game'
+import { NimcardGame } from './index.js'
 
 window.customElements.define(NimcardGame.elementName, NimcardGame)

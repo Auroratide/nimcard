@@ -7,10 +7,12 @@
   "type": "module",
   "scripts": {
     "start": "wds --node-resolve -p 3000",
-    "clean": "find lib -type f -name '*.ts' -delete -o -name '*.js' -delete",
-    "build": "npm run clean && tsc",
-    "dev": "npm-run-all --parallel 'build -- --watch' 'start -- --watch'",
-    "test": "npm run build && wtr --node-resolve 'lib/**/*.spec.js'"
+    "build:nimcard": "tsc -p nimcard",
+    "build:component": "rollup -c component/rollup.config.js",
+    "clean": "rm -rf component/lib nimcard/lib",
+    "build": "npm-run-all build:nimcard build:component",
+    "dev": "npm-run-all --parallel 'build:nimcard -- --watch' 'build:component -- -w' 'start -- --watch'",
+    "test": "npm run build && wtr"
   },
   "author": {
     "name": "Timothy Foster",
@@ -19,9 +21,19 @@
   "license": "ISC",
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@tsconfig/svelte": "^2.0.1",
     "@web/dev-server": "^0.1.28",
     "@web/test-runner": "^0.13.22",
     "npm-run-all": "^4.1.5",
+    "rollup": "^2.61.0",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-svelte": "^7.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "svelte": "^3.44.2",
+    "svelte-check": "^2.2.10",
+    "svelte-preprocess": "^4.9.8",
     "typescript": "^4.5.2"
   },
   "dependencies": {
