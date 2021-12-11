@@ -8,6 +8,7 @@ const Suit = Nimcard.Card.Suit
 
 // give svelte time to update itself
 const tick = () => new Promise(resolve => setTimeout(resolve))
+const seconds = (n) => new Promise(resolve => setTimeout(resolve, n * 1000))
 
 describe('my-component', () => {
     const deck = [
@@ -17,7 +18,19 @@ describe('my-component', () => {
         { value: Value.King, suit: Suit.Hearts },
     ]
 
-    const onBoard = () => '.board '
+    const query = (q) => {
+        const ret = new Query()
+        ret.then(q)
+        return ret
+    }
+
+    const els = {
+        board: (elem) => elem.querySelector('.board'),
+        playerPile: (i) => (elem) => elem.querySelectorAll('.player-pile')[i],
+        card: (value, suit) => (elem) => elem.querySelector(`playing-card[value="${value}"][suit="${suit}"]`),
+        cards: (elem) => elem.querySelectorAll('playing-card'),
+    }
+
     const playingCard = (value, suit) =>
         `playing-card[value="${value}"][suit="${suit}"]`
 
@@ -32,11 +45,11 @@ describe('my-component', () => {
         elem.start(game)
         await tick()
 
-        expect(elem.querySelectorAll('playing-card')).to.have.length(4)
-        expect(elem.querySelector(playingCard(Value.Queen, Suit.Diamonds))).to.exist
-        expect(elem.querySelector(playingCard(Value.Two, Suit.Spades))).to.exist
-        expect(elem.querySelector(playingCard(Value.Three, Suit.Clubs))).to.exist
-        expect(elem.querySelector(playingCard(Value.King, Suit.Hearts))).to.exist
+        expect(query(els.cards).apply(elem)).to.have.length(4)
+        expect(query(els.card(Value.Queen, Suit.Diamonds)).apply(elem)).to.exist
+        expect(query(els.card(Value.Two, Suit.Spades)).apply(elem)).to.exist
+        expect(query(els.card(Value.Three, Suit.Clubs)).apply(elem)).to.exist
+        expect(query(els.card(Value.King, Suit.Hearts)).apply(elem)).to.exist
     })
 
     it('playing a move', async () => {
@@ -53,9 +66,24 @@ describe('my-component', () => {
         // Board is:
         // 2s 3c
         // Qd Kh
-        elem.querySelector(onBoard() + playingCard(Value.Two, Suit.Spades)).click()
-        await tick()
+        query(els.board).then(els.card(Value.Two, Suit.Spades)).apply(elem).click()
+        await seconds(0.5)
 
-        expect(elem.querySelectorAll(onBoard() + 'playing-card')).to.have.length(2)
+        expect(query(els.board).then(els.cards).apply(elem)).to.have.length(2)
+        expect(query(els.playerPile(0)).then(els.cards).apply(elem)).to.have.length(2)
     })
 })
+
+class Query {
+    queries = []
+
+    // HTMLElement => HTMLElement
+    then = (q) => {
+        this.queries.push(q)
+        return this
+    }
+
+    apply = (elem) => {
+        return this.queries.reduce((curElem, query) => query(curElem), elem)
+    }
+}
