@@ -1,4 +1,6 @@
 import type * as Nimcard from '../../nimcard/lib'
+import type { Player } from './players'
+import { human, ai } from './players'
 import NimcardInternal from './NimcardInternal.svelte'
 
 export class NimcardGame extends HTMLElement {
@@ -29,8 +31,8 @@ export class NimcardGame extends HTMLElement {
         return this.internal.getGame()
     }
 
-    start = (game: Nimcard.Game) => {
-        this.internal.startGame(game)
+    start = (game: Nimcard.Game, players: Player[] = [human, human]) => {
+        this.internal.startGame(game, players)
     }
 
     private createRoot(): ShadowRoot {

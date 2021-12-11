@@ -1,8 +1,12 @@
 <script lang="ts">
     import * as Nimcard from '../../nimcard/lib/index.js'
+    import { Player, human, ai } from './players'
     import { crossfade } from 'svelte/transition'
 
     let game: Nimcard.Game | null = null
+    let players: Player[] = []
+
+    $: options = game ? Nimcard.Game.options(game) : []
 
     const [ send, receive ] = crossfade({})
 
@@ -10,8 +14,17 @@
         return game
     }
 
-    export function startGame(newGame: Nimcard.Game) {
+    export function startGame(newGame: Nimcard.Game, thePlayers: Player[]) {
         game = newGame
+        players = thePlayers
+    }
+
+    export function commit(option: Nimcard.Game.Option) {
+        game = option.commit()
+
+        if (players[game.currentPlayer] === ai) {
+            setTimeout(() => commit(Nimcard.Ai.optimal(6)(game!)!))
+        }
     }
 
     const handleCardClick = (row: number, card: number) => () => {
@@ -20,8 +33,14 @@
         const option = options.find(it => it.row === row && it.amount === amount)
 
         if (option) {
-            game = option.commit()
+            commit(option)
         }
+    }
+
+    const isCardEnabled = (game: Nimcard.Game, row: number, card: number) => {
+        const isHuman = players[game.currentPlayer ?? 0] === human
+        const isOption = null != options.find(o => o.row === row && o.amount === game.board[row].length - card)
+        return isHuman && isOption
     }
 
     const cardId = (card: Nimcard.Board.ScoredCard) => `${card.card.value}${card.card.suit}`
@@ -32,11 +51,11 @@
         <section class="board">
             <ol>
                 {#each game.board as row, ri}
-                    <li>
+                    <li class="row-item">
                         <ol>
                             {#each row as card, ci}
                                 <li out:send={{key: cardId(card)}}>
-                                    <button on:click={handleCardClick(ri, ci)}>
+                                    <button on:click={handleCardClick(ri, ci)} disabled={!isCardEnabled(game, ri, ci)}>
                                         <playing-card value={card.card.value} suit={card.card.suit}></playing-card>
                                     </button>
                                 </li>
@@ -118,5 +137,10 @@
     .player-pile:nth-child(odd) ul {
         justify-content: right;
         flex-direction: row-reverse;
+    }
+
+    button[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 </style>
