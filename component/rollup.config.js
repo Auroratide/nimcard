@@ -65,4 +65,15 @@ export default [ {
     plugins: [
         production && terser(),
     ]
+}, {
+    input: path.resolve(__dirname, 'src', 'ai-worker.js'),
+    output: {
+        sourcemap: false,
+        format: 'es',
+        name: 'ai-worker',
+        file: path.resolve(__dirname, 'lib', 'ai-worker.js'),
+    },
+    plugins: [
+        production && terser(),
+    ]
 } ]

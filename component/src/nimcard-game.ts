@@ -1,6 +1,6 @@
 import type * as Nimcard from '../../nimcard/lib'
 import type { Player } from './players'
-import { human, ai } from './players'
+import { human } from './players'
 import NimcardInternal from './NimcardInternal.svelte'
 
 export class NimcardGame extends HTMLElement {
@@ -24,6 +24,9 @@ export class NimcardGame extends HTMLElement {
 
         this.internal = new NimcardInternal({
             target: this,
+            props: {
+                aiworker: this.aiworker,
+            }
         })
     }
 
@@ -33,6 +36,21 @@ export class NimcardGame extends HTMLElement {
 
     start = (game: Nimcard.Game, players: Player[] = [human, human]) => {
         this.internal.startGame(game, players)
+    }
+
+    static get observedAttributes(): string[] {
+        return ['aiworker']
+    }
+
+    attributeChangedCallback() {
+        this.internal.aiworker = this.aiworker
+    }
+
+    get aiworker(): string {
+        return this.getAttribute('aiworker') ?? ''
+    }
+    set aiworker(value: string) {
+        this.setAttribute('aiworker', value)
     }
 
     private createRoot(): ShadowRoot {

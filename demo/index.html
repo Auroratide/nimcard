@@ -13,14 +13,14 @@
     </head>
     <body>
         <main>
-            <nimcard-game id="game"></nimcard-game>
+            <nimcard-game id="game" aiworker="component/lib/ai-worker.js"></nimcard-game>
             <script type="module">
                 import * as Nimcard from '../nimcard/lib/index.js'
                 const deck = Nimcard.Deck.createFullDeck()
                 const board = Nimcard.Board.create(deck)
                 const game = Nimcard.Game.start(board)
 
-                document.getElementById('game').start(game)
+                document.getElementById('game').start(game, ['human', 'ai'])
             </script>
         </main>
     </body>

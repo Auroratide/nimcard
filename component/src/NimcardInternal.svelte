@@ -1,10 +1,28 @@
+<svelte:options accessors />
+
 <script lang="ts">
     import * as Nimcard from '../../nimcard/lib/index.js'
-    import { Player, human, ai } from './players'
+    import { Player, human, ai, doAiTurn } from './players'
+    import { onMount, onDestroy } from 'svelte'
     import { crossfade } from 'svelte/transition'
+
+    export let aiworker: string
 
     let game: Nimcard.Game | null = null
     let players: Player[] = []
+    let aiTurn: Promise<Nimcard.Game.Option | null> | null = null
+
+    let aiWaitCard: HTMLElement
+    let aiWaitCardInterval: number
+    onMount(() => {
+        aiWaitCardInterval = setInterval(() => {
+            if (aiWaitCard)
+                aiWaitCard.toggleAttribute('facedown')
+        }, 1000)
+    })
+    onDestroy(() => {
+        clearInterval(aiWaitCardInterval)
+    })
 
     $: options = game ? Nimcard.Game.options(game) : []
 
@@ -22,8 +40,8 @@
     export function commit(option: Nimcard.Game.Option) {
         game = option.commit()
 
-        if (players[game.currentPlayer] === ai) {
-            setTimeout(() => commit(Nimcard.Ai.optimal(6)(game!)!))
+        if (players[game.currentPlayer] === ai && Nimcard.Game.options(game).length > 0) {
+            setTimeout(aiTakeTurn)
         }
     }
 
@@ -44,11 +62,26 @@
     }
 
     const cardId = (card: Nimcard.Board.ScoredCard) => `${card.card.value}${card.card.suit}`
+
+    const aiTakeTurn = async () => {
+        aiTurn = doAiTurn(game!, aiworker)
+        const option = await aiTurn
+
+        if (option) {
+            commit(option)
+        }
+    }
 </script>
 
 <div class="game">
     {#if game}
         <section class="board">
+            {#await aiTurn}
+                <div class="ai-turn">
+                    <p>Taking my turn...</p>
+                    <playing-card value="a" suit="s" facedown bind:this={aiWaitCard}></playing-card>
+                </div>
+            {/await}
             <ol>
                 {#each game.board as row, ri}
                     <li class="row-item">
@@ -85,6 +118,7 @@
 <style>
     .game {
         --playing-card-width: 5em;
+        position: relative;
     }
 
     ol, ul {
@@ -94,6 +128,7 @@
     }
 
     .board {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -142,5 +177,22 @@
     button[disabled] {
         opacity: 0.5;
         cursor: not-allowed;
+    }
+
+    .ai-turn {
+        --playing-card-width: 3em;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        background: #eee;
+        padding: 1em;
+        border-radius: 1em;
+        box-shadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.25);
     }
 </style>

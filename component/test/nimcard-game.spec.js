@@ -72,6 +72,29 @@ describe('my-component', () => {
         expect(query(els.board).then(els.cards).apply(elem)).to.have.length(2)
         expect(query(els.playerPile(0)).then(els.cards).apply(elem)).to.have.length(2)
     })
+
+    it('ai making a move', async () => {
+        const elem = await fixture(`
+            <nimcard-game aiworker="component/lib/ai-worker.js"></nimcard-game>
+        `)
+
+        const board = Nimcard.Board.create(deck, [2, 2])
+        const game = Nimcard.Game.start(board)
+
+        elem.start(game, ['human', 'ai'])
+        await tick()
+
+        // Board is:
+        // 2s 3c
+        // Qd Kh
+        query(els.board).then(els.card(Value.Two, Suit.Spades)).apply(elem).click()
+        await seconds(0.5)
+
+        // AI should choose Kh but not Qd
+        expect(query(els.board).then(els.cards).apply(elem)).to.have.length(1)
+        expect(query(els.playerPile(0)).then(els.cards).apply(elem)).to.have.length(2)
+        expect(query(els.playerPile(1)).then(els.cards).apply(elem)).to.have.length(1)
+    })
 })
 
 class Query {
