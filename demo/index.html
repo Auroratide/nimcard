@@ -16,7 +16,7 @@
             <nimcard-game id="game" aiworker="component/lib/ai-worker.js"></nimcard-game>
             <script type="module">
                 import * as Nimcard from '../nimcard/lib/index.js'
-                const deck = Nimcard.Deck.createFullDeck()
+                const deck = Nimcard.Deck.shuffle(Nimcard.Deck.createFullDeck())
                 const board = Nimcard.Board.create(deck)
                 const game = Nimcard.Game.start(board)
 

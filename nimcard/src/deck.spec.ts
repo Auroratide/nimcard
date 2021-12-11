@@ -50,4 +50,17 @@ describe('deck', () => {
             expect(card).to.be.null
         })
     })
+
+    describe('shuffle', () => {
+        const valueSuit = (card: Card): string => `${card.value}${card.suit}`
+
+        it('is random', () => {
+            let deck = Deck.createFullDeck()
+            let shuffled = Deck.shuffle(deck)
+
+            expect(deck.map(valueSuit)).to.deep.equal(deck.map(valueSuit))
+            expect(shuffled.map(valueSuit)).to.not.deep.equal(deck.map(valueSuit))
+            expect(shuffled.length).to.equal(deck.length)
+        })
+    })
 })

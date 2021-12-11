@@ -19,4 +19,16 @@ export namespace Deck {
             card,
         }
     }
+
+    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    export const shuffle = (deck: Deck): Deck => {
+        const clone = deck.slice()
+
+        for (let i = clone.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [clone[i], clone[j]] = [clone[j], clone[i]];
+        }
+
+        return clone
+    }
 }
