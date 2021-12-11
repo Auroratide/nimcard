@@ -20,7 +20,16 @@
                 const board = Nimcard.Board.create(deck)
                 const game = Nimcard.Game.start(board)
 
-                document.getElementById('game').start(game, ['human', 'ai'])
+                const elem = document.getElementById('game')
+                elem.onnewgame = () => {
+                    const deck = Nimcard.Deck.shuffle(Nimcard.Deck.createFullDeck())
+                    const board = Nimcard.Board.create(deck)
+                    const game = Nimcard.Game.start(board)
+
+                    elem.start(game, ['human', 'ai'])
+                }
+
+                elem.onnewgame()
             </script>
         </main>
     </body>

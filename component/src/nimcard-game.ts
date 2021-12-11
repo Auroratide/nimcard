@@ -53,6 +53,13 @@ export class NimcardGame extends HTMLElement {
         this.setAttribute('aiworker', value)
     }
 
+    get onnewgame(): null | (() => void) {
+        return this.internal.onnewgame
+    }
+    set onnewgame(v: null | (() => void)) {
+        this.internal.onnewgame = v
+    }
+
     private createRoot(): ShadowRoot {
         const root = this.shadowRoot ?? this.attachShadow({ mode: 'open' })
 

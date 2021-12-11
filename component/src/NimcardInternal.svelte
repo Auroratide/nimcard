@@ -7,6 +7,7 @@
     import { crossfade, fly } from 'svelte/transition'
 
     export let aiworker: string
+    export let onnewgame: null | (() => void) = null
 
     let game: Nimcard.Game | null = null
     let players: Player[] = []
@@ -103,6 +104,9 @@
             {#if isGameOver}
                 <section transition:fly={{ y: 100 }} class="winner dialog">
                     <p>{winnerText}</p>
+                    {#if onnewgame}
+                        <button on:click={onnewgame}>Play again</button>
+                    {/if}
                 </section>
             {/if}
             <ol>
@@ -183,7 +187,7 @@
         margin-right: var(--card-margin);
     }
 
-    .board button {
+    .board ol button {
         border: none;
         background: none;
         padding: 0;
@@ -284,7 +288,7 @@
         background: #fff;
     }
 
-    .winner p {
+    .winner p:last-child {
         margin: 0;
     }
 </style>
