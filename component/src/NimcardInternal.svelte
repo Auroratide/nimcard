@@ -4,7 +4,7 @@
     import * as Nimcard from '../../nimcard/lib/index.js'
     import { Player, human, ai, doAiTurn } from './players'
     import { onMount, onDestroy } from 'svelte'
-    import { crossfade } from 'svelte/transition'
+    import { crossfade, fly } from 'svelte/transition'
 
     export let aiworker: string
 
@@ -28,6 +28,16 @@
 
     $: options = game ? Nimcard.Game.options(game) : []
     $: scores = game ? Nimcard.Game.scores(game) : [0, 0]
+    $: isGameOver = game ? Nimcard.Game.options(game).length === 0 : false
+    
+    let winnerText = ''
+    $: {
+        if (scores[0] === scores[1]) {
+            winnerText = 'Draw'
+        } else {
+            winnerText = Math.max(...scores) === scores[0] ? 'Player 1 wins!' : 'Player 2 wins!'
+        }
+    }
 
     const [ send, receive ] = crossfade({})
 
@@ -85,11 +95,16 @@
     {#if game}
         <section class="board">
             {#await aiTurn}
-                <div class="ai-turn">
+                <div class="ai-turn dialog">
                     <p>Taking my turn...</p>
                     <playing-card value="a" suit="s" facedown bind:this={aiWaitCard}></playing-card>
                 </div>
             {/await}
+            {#if isGameOver}
+                <section transition:fly={{ y: 100 }} class="winner dialog">
+                    <p>{winnerText}</p>
+                </section>
+            {/if}
             <ol>
                 {#each game.board as row, ri}
                     <li class="row-item">
@@ -243,8 +258,7 @@
         cursor: not-allowed;
     }
 
-    .ai-turn {
-        --playing-card-width: 3em;
+    .dialog {
         position: absolute;
         display: flex;
         flex-direction: column;
@@ -255,8 +269,22 @@
         transform: translate(-50%, -50%);
         z-index: 2;
         background: #eee;
+        box-shadow: 0 0.15em 0.2em 0.1em rgba(0, 0, 0, 0.25);
         padding: 1em;
         border-radius: 1em;
-        box-shadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.25);
+    }
+
+    .ai-turn {
+        --playing-card-width: 3em;
+    }
+
+    .winner {
+        font-size: 2em;
+        font-weight: bold;
+        background: #fff;
+    }
+
+    .winner p {
+        margin: 0;
     }
 </style>
