@@ -12,6 +12,7 @@
     let game: Nimcard.Game | null = null
     let players: Player[] = []
     let aiTurn: Promise<Nimcard.Game.Option | null> | null = null
+    let facedownStates: boolean[][] = []
 
     let maxRowLength: number = 0
 
@@ -54,6 +55,8 @@
         if (players[game.currentPlayer] === ai) {
             setTimeout(aiTakeTurn)
         }
+
+        animateStart(game)
     }
 
     export function commit(option: Nimcard.Game.Option) {
@@ -90,6 +93,23 @@
             commit(option)
         }
     }
+
+    const animateStart = (game: Nimcard.Game) => {
+        facedownStates = game.board.map(r => r.map(c => true))
+
+        let time = 0
+        facedownStates.forEach((r, ri) => {
+            r.forEach((c, ci) => {
+                time += 25
+                setTimeout(() => {
+                    let clone = facedownStates.map(r => r.slice())
+                    clone[ri][ci] = false
+
+                    facedownStates = clone
+                }, time)
+            })
+        })
+    }
 </script>
 
 <div class="game" style="--max-row-length: {maxRowLength};">
@@ -116,7 +136,7 @@
                             {#each row as card, ci}
                                 <li out:send={{key: cardId(card)}} class:option={isCardEnabled(game, ri, ci)}>
                                     <button on:click={handleCardClick(ri, ci)} disabled={!isCardEnabled(game, ri, ci)}>
-                                        <playing-card value={card.card.value} suit={card.card.suit}></playing-card>
+                                        <playing-card value={card.card.value} suit={card.card.suit} facedown={facedownStates[ri][ci]}></playing-card>
                                     </button>
                                 </li>
                             {/each}
