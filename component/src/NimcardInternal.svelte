@@ -72,7 +72,7 @@
     const cardId = (card: Nimcard.Board.ScoredCard) => `${card.card.value}${card.card.suit}`
 
     const aiTakeTurn = async () => {
-        aiTurn = doAiTurn(game!, aiworker)
+        aiTurn = new Promise(resolve => setTimeout(() => resolve(doAiTurn(game!, aiworker)), 1000))
         const option = await aiTurn
 
         if (option) {

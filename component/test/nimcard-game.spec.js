@@ -88,7 +88,7 @@ describe('my-component', () => {
         // 2s 3c
         // Qd Kh
         query(els.board).then(els.card(Value.Two, Suit.Spades)).apply(elem).click()
-        await seconds(0.5)
+        await seconds(1.5)
 
         // AI should choose Kh but not Qd
         expect(query(els.board).then(els.cards).apply(elem)).to.have.length(1)
