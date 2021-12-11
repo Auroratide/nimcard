@@ -12,6 +12,8 @@
     let players: Player[] = []
     let aiTurn: Promise<Nimcard.Game.Option | null> | null = null
 
+    let maxRowLength: number = 0
+
     let aiWaitCard: HTMLElement
     let aiWaitCardInterval: number
     onMount(() => {
@@ -25,6 +27,7 @@
     })
 
     $: options = game ? Nimcard.Game.options(game) : []
+    $: scores = game ? Nimcard.Game.scores(game) : [0, 0]
 
     const [ send, receive ] = crossfade({})
 
@@ -35,6 +38,11 @@
     export function startGame(newGame: Nimcard.Game, thePlayers: Player[]) {
         game = newGame
         players = thePlayers
+        maxRowLength = Math.max(...game.board.map(r => r.length))
+
+        if (players[game.currentPlayer] === ai) {
+            setTimeout(aiTakeTurn)
+        }
     }
 
     export function commit(option: Nimcard.Game.Option) {
@@ -73,7 +81,7 @@
     }
 </script>
 
-<div class="game">
+<div class="game" style="--max-row-length: {maxRowLength};">
     {#if game}
         <section class="board">
             {#await aiTurn}
@@ -87,7 +95,7 @@
                     <li class="row-item">
                         <ol>
                             {#each row as card, ci}
-                                <li out:send={{key: cardId(card)}}>
+                                <li out:send={{key: cardId(card)}} class:option={isCardEnabled(game, ri, ci)}>
                                     <button on:click={handleCardClick(ri, ci)} disabled={!isCardEnabled(game, ri, ci)}>
                                         <playing-card value={card.card.value} suit={card.card.suit}></playing-card>
                                     </button>
@@ -101,7 +109,10 @@
         <div class="player-piles">
             {#each game.players as player, pi}
                 <section class="player-pile">
-                    <strong>Player {pi}</strong>
+                    <strong class="player-title">
+                        <span class="player-name">Player {pi + 1}</span>
+                        <span class="player-score">[{scores[pi]}]</span>
+                    </strong>
                     <ul>
                         {#each player as card}
                             <li in:receive={{key: cardId(card)}}>
@@ -118,6 +129,9 @@
 <style>
     .game {
         --playing-card-width: 5em;
+        --card-margin: 0.5em;
+        --glow: var(--nimcard-game-glow-color, hsla(192, 100%, 50%, 0.5));
+        --select: var(--nimcard-game-select-color, hsl(60, 100%, 50%));
         position: relative;
     }
 
@@ -136,16 +150,22 @@
 
     .board > ol {
         flex-direction: column;
+        min-width: calc(var(--playing-card-width) * var(--max-row-length) + var(--card-margin) * var(--max-row-length));
     }
 
-    .board ol > li {
+    .board > ol > li {
         display: block;
-        margin-bottom: 0.5em;
+        margin-bottom: var(--card-margin);
+    }
+    
+    .board > ol > li,
+    .player-pile li {
+        min-height: calc(7 / 5 * var(--playing-card-width));
     }
 
     .board ol ol li,
     .player-pile ul li {
-        margin-right: 0.5em;
+        margin-right: var(--card-margin);
     }
 
     .board button {
@@ -161,8 +181,17 @@
         display: flex;
     }
 
+    .player-pile ul {
+        flex-wrap: wrap;
+    }
+
+    .player-pile ul li {
+        margin-bottom: var(--card-margin);
+    }
+
     .player-pile {
         flex: 1 1 50%;
+        margin: 0 var(--card-margin);
     }
 
     .player-pile:nth-child(odd) {
@@ -174,8 +203,43 @@
         flex-direction: row-reverse;
     }
 
+    .player-pile:nth-child(odd) ul li {
+        margin-left: var(--card-margin);
+        margin-right: 0;
+    }
+
+    .player-title {
+        display: flex;
+        font-size: 1.25em;
+        margin-bottom: 0.25em;
+    }
+
+    .player-title > * {
+        margin-right: 0.25em;
+    }
+
+    .player-pile:nth-child(odd) .player-title {
+        flex-direction: row-reverse;
+        justify-content: right;
+    }
+
+    .player-pile:nth-child(odd) .player-title > * {
+        margin-right: 0;
+        margin-left: 0.25em;
+    }
+
+    .row-item .option {
+        border-radius: calc(0.1 * var(--playing-card-width));
+        box-shadow: 0 0 0.25em 0.1em var(--glow);
+    }
+
+    .row-item .option:hover,
+    .row-item .option:hover ~ .option {
+        animation: none;
+        box-shadow: 0 0 0.5em 0.25em var(--select);
+    }
+
     button[disabled] {
-        opacity: 0.5;
         cursor: not-allowed;
     }
 
