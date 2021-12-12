@@ -216,6 +216,10 @@
         font-size: 1em;
     }
 
+    .board ol button[disabled] {
+        cursor: not-allowed;
+    }
+
     .player-piles {
         display: flex;
     }
@@ -276,10 +280,6 @@
     .row-item .option:hover ~ .option {
         animation: none;
         box-shadow: 0 0 0.5em 0.25em var(--select);
-    }
-
-    button[disabled] {
-        cursor: not-allowed;
     }
 
     .dialog {
