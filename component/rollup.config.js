@@ -6,8 +6,7 @@ import { terser } from 'rollup-plugin-terser'
 import sveltePreprocess from 'svelte-preprocess'
 import typescript from '@rollup/plugin-typescript'
 
-// const production = !process.env.ROLLUP_WATCH
-const production = false
+const production = !process.env.ROLLUP_WATCH
 
 export default [ {
     input: path.resolve(__dirname, 'src', 'index.ts'),

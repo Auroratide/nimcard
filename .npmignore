@@ -1,0 +1,10 @@
+/component/src
+/component/test
+/component/rollup.config.js
+/component/tsconfig.json
+/demo
+/nimcard/src
+/nimcard/tsconfig.json
+/nimcard/lib/*.spec.js
+/nimcard/lib/*.spec.d.ts
+web-test-runner.config.mjs

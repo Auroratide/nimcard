@@ -1,9 +1,15 @@
 {
   "name": "@auroratide/nimcard",
   "version": "0.0.1",
-  "description": "",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
+  "description": "A small stategy card game",
+  "keywords": [
+    "game",
+    "casino",
+    "web-component",
+    "strategy"
+  ],
+  "main": "nimcard/lib/index.js",
+  "module": "nimcard/lib/index.js",
   "type": "module",
   "scripts": {
     "start": "wds --node-resolve -p 3000",
@@ -12,7 +18,8 @@
     "clean": "rm -rf component/lib nimcard/lib",
     "build": "npm-run-all build:nimcard build:component",
     "dev": "npm-run-all --parallel 'build:nimcard -- --watch' 'build:component -- -w' 'start -- --watch'",
-    "test": "npm-run-all clean build && wtr"
+    "test": "npm-run-all clean build && wtr",
+    "prepublishOnly": "npm run test"
   },
   "author": {
     "name": "Timothy Foster",
