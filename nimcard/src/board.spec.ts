@@ -53,29 +53,29 @@ describe('board', () => {
         })
     })
 
-    describe('scored', () => {
+    describe('standardScoring', () => {
         const clubs = (value: Card.Value) => ({ value, suit: Card.Suit.Clubs })
         it('queen of diamonds', () => {
-            expect(Board.scored(QueenOfDiamonds).score).to.equal(-10)
+            expect(Board.standardScoring(QueenOfDiamonds)).to.equal(-10)
         })
 
         it('face card', () => {
-            expect(Board.scored(clubs(Card.Value.Jack)).score).to.equal(10)
-            expect(Board.scored(clubs(Card.Value.Queen)).score).to.equal(10)
-            expect(Board.scored(clubs(Card.Value.King)).score).to.equal(10)
-            expect(Board.scored(clubs(Card.Value.Ace)).score).to.equal(11)
+            expect(Board.standardScoring(clubs(Card.Value.Jack))).to.equal(10)
+            expect(Board.standardScoring(clubs(Card.Value.Queen))).to.equal(10)
+            expect(Board.standardScoring(clubs(Card.Value.King))).to.equal(10)
+            expect(Board.standardScoring(clubs(Card.Value.Ace))).to.equal(11)
         })
 
         it('numerical card', () => {
-            expect(Board.scored(clubs(Card.Value.Two)).score).to.equal(2)
-            expect(Board.scored(clubs(Card.Value.Three)).score).to.equal(3)
-            expect(Board.scored(clubs(Card.Value.Four)).score).to.equal(4)
-            expect(Board.scored(clubs(Card.Value.Five)).score).to.equal(5)
-            expect(Board.scored(clubs(Card.Value.Six)).score).to.equal(6)
-            expect(Board.scored(clubs(Card.Value.Seven)).score).to.equal(7)
-            expect(Board.scored(clubs(Card.Value.Eight)).score).to.equal(8)
-            expect(Board.scored(clubs(Card.Value.Nine)).score).to.equal(9)
-            expect(Board.scored(clubs(Card.Value.Ten)).score).to.equal(10)
+            expect(Board.standardScoring(clubs(Card.Value.Two))).to.equal(2)
+            expect(Board.standardScoring(clubs(Card.Value.Three))).to.equal(3)
+            expect(Board.standardScoring(clubs(Card.Value.Four))).to.equal(4)
+            expect(Board.standardScoring(clubs(Card.Value.Five))).to.equal(5)
+            expect(Board.standardScoring(clubs(Card.Value.Six))).to.equal(6)
+            expect(Board.standardScoring(clubs(Card.Value.Seven))).to.equal(7)
+            expect(Board.standardScoring(clubs(Card.Value.Eight))).to.equal(8)
+            expect(Board.standardScoring(clubs(Card.Value.Nine))).to.equal(9)
+            expect(Board.standardScoring(clubs(Card.Value.Ten))).to.equal(10)
         })
     })
 })
