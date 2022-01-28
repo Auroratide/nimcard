@@ -1,7 +1,7 @@
-import { Card } from './card'
-import { Board } from './board'
-import { Game } from './game'
-import { Ai } from './ai'
+import { Card } from './card.js'
+import { Board } from './board.js'
+import { Game } from './game.js'
+import { Ai } from './ai.js'
 import { expect } from '@open-wc/testing'
 
 describe('ai', () => {

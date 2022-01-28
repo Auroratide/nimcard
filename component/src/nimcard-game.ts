@@ -1,6 +1,6 @@
-import type * as Nimcard from '../../nimcard/lib'
-import type { Player } from './players'
-import { human } from './players'
+import type * as Nimcard from '../../nimcard/lib/index.js'
+import type { Player } from './players.js'
+import { human } from './players.js'
 import NimcardInternal from './NimcardInternal.svelte'
 
 export class NimcardGame extends HTMLElement {

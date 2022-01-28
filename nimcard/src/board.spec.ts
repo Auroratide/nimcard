@@ -1,6 +1,6 @@
-import { Deck } from './deck'
-import { Card } from './card'
-import { Board } from './board'
+import { Deck } from './deck.js'
+import { Card } from './card.js'
+import { Board } from './board.js'
 import { expect } from '@open-wc/testing'
 
 describe('board', () => {

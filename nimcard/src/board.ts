@@ -1,5 +1,5 @@
-import { Deck } from './deck'
-import { Card } from './card'
+import { Deck } from './deck.js'
+import { Card } from './card.js'
 
 export type Board = Board.ScoredCard[][]
 

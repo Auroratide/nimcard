@@ -1,6 +1,6 @@
 import { expect } from '@open-wc/testing'
-import { Deck } from './deck'
-import { Card } from './card'
+import { Deck } from './deck.js'
+import { Card } from './card.js'
 
 describe('deck', () => {
     describe('createFullDeck', () => {

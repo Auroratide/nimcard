@@ -1,4 +1,4 @@
-import { Game } from './game'
+import { Game } from './game.js'
 
 export type Ai = (game: Game) => Game.Option | null
 

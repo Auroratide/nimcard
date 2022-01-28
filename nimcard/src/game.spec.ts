@@ -1,7 +1,7 @@
 import { expect } from '@open-wc/testing'
-import { Board } from './board'
-import { Card } from './card'
-import { Game } from './game'
+import { Board } from './board.js'
+import { Card } from './card.js'
+import { Game } from './game.js'
 
 describe('game', () => {
     // Produces the game:

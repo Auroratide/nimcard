@@ -1,1 +1,1 @@
-export * from './nimcard-game'
+export * from './nimcard-game.js'
