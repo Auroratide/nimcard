@@ -1,3 +1,5 @@
 import { NimcardGame } from './index.js'
 
-window.customElements.define(NimcardGame.elementName, NimcardGame)
+if (!window.customElements.get(NimcardGame.elementName)) {
+    window.customElements.define(NimcardGame.elementName, NimcardGame)
+}
