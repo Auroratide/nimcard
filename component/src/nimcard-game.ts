@@ -16,26 +16,33 @@ export class NimcardGame extends HTMLElement {
         }
     `
 
-    private internal: NimcardInternal
+    private internal?: NimcardInternal
 
     constructor() {
         super()
         this.createRoot()
+    }
 
-        this.internal = new NimcardInternal({
-            target: this,
-            props: {
-                aiworker: this.aiworker,
-            }
-        })
+    connectedCallback() {
+        if (this.internal === undefined) {
+            this.internal = new NimcardInternal({
+                target: this,
+                props: {
+                    aiworker: this.aiworker,
+                }
+            })
+        }
     }
 
     get game(): Nimcard.Game | null {
-        return this.internal.getGame()
+        return this.internal?.getGame()
     }
 
     start = (game: Nimcard.Game, players: Player[] = [human, human]) => {
-        this.internal.startGame(game, players)
+        if (this.internal !== undefined)
+            this.internal.startGame(game, players)
+        else
+            console.error('ERROR in nimcard-game: Cannot start a nimcard game that is unmounted')
     }
 
     static get observedAttributes(): string[] {
@@ -43,7 +50,8 @@ export class NimcardGame extends HTMLElement {
     }
 
     attributeChangedCallback() {
-        this.internal.aiworker = this.aiworker
+        if (this.internal !== undefined)
+            this.internal.aiworker = this.aiworker
     }
 
     get aiworker(): string {
@@ -54,10 +62,11 @@ export class NimcardGame extends HTMLElement {
     }
 
     get onnewgame(): null | (() => void) {
-        return this.internal.onnewgame
+        return this.internal?.onnewgame
     }
     set onnewgame(v: null | (() => void)) {
-        this.internal.onnewgame = v
+        if (this.internal !== undefined)
+            this.internal.onnewgame = v
     }
 
     private createRoot(): ShadowRoot {
